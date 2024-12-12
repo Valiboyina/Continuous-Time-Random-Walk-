@@ -31,6 +31,11 @@
             const intervals = parseInt(document.getElementById('intervals').value);
             const stepProbability = parseFloat(document.getElementById('stepProbability').value);
 
+            if (isNaN(simulations) || simulations <= 0 || isNaN(intervals) || intervals <= 0 || isNaN(stepProbability) || stepProbability < 0 || stepProbability > 1) {
+                alert("Please enter valid inputs: Simulations > 0, Intervals > 0, 0 <= Step Probability <= 1");
+                return;
+            }
+
             const dt = 1 / intervals; // Time step size
             const time = Array.from({ length: intervals + 1 }, (_, i) => i * dt); // Time points
             const datasets = [];
@@ -46,9 +51,9 @@
                 }
 
                 datasets.push({
-                    label: `Simulation ${sim + 1}`,
+                    label: '', // Remove label from legend
                     data: trajectory,
-                    borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
+                    borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`,
                     fill: false,
                 });
             }
@@ -64,7 +69,7 @@
                     responsive: true,
                     plugins: {
                         legend: {
-                            display: true
+                            display: false // Hide legend
                         },
                         title: {
                             display: true,
@@ -91,3 +96,4 @@
     </script>
 </body>
 </html>
+
