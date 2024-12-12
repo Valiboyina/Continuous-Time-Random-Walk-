@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous Time Random Walk Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Continuous Time Random Walk Simulator</h1>
+
+    <label for="simulations">Number of Simulations:</label>
+    <input type="number" id="simulations" value="5" min="1">
+    <br>
+
+    <label for="intervals">Intervals per Simulation:</label>
+    <input type="number" id="intervals" value="100" min="1">
+    <br>
+
+    <label for="stepProbability">Step Probability (0 to 1):</label>
+    <input type="number" id="stepProbability" value="0.5" min="0" max="1" step="0.01">
+    <br>
+
+    <button onclick="simulateRandomWalk()">Run Simulation</button>
+
+    <canvas id="randomWalkChart" width="800" height="400"></canvas>
+
+    <script>
+        function simulateRandomWalk() {
+            const simulations = parseInt(document.getElementById('simulations').value);
+            const intervals = parseInt(document.getElementById('intervals').value);
+            const stepProbability = parseFloat(document.getElementById('stepProbability').value);
+
+            const dt = 1 / intervals; // Time step size
+            const time = Array.from({ length: intervals + 1 }, (_, i) => i * dt); // Time points
+            const datasets = [];
+
+            for (let sim = 0; sim < simulations; sim++) {
+                let position = 0;
+                const trajectory = [position];
+
+                for (let i = 0; i < intervals; i++) {
+                    const step = Math.random() < stepProbability ? Math.sqrt(dt) : -Math.sqrt(dt);
+                    position += step;
+                    trajectory.push(position);
+                }
+
+                datasets.push({
+                    label: `Simulation ${sim + 1}`,
+                    data: trajectory,
+                    borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
+                    fill: false,
+                });
+            }
+
+            const ctx = document.getElementById('randomWalkChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: time,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        title: {
+                            display: true,
+                            text: 'Continuous Time Random Walk Simulations'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Position'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
